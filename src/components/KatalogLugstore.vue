@@ -1,115 +1,98 @@
 <template>
-    <!-- Women Banner Section Begin -->
-    <section class="women-banner spad">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-12 mt-5">
-                    <carousel class="product-slider" :items="3" :dots="false" :nav="false" :autoplay="true">
-                        <div class="product-item">
-                            <div class="pi-pic">
-                                <img src="img/produk/bango.png" alt="" />
-                                <ul>
-                                    <li class="w-icon active">
-                                        <a href="#"><i class="icon_bag_alt"></i></a>
-                                    </li>
-                                    <li class="quick-view"><router-link to="/product">+ Quick View</router-link></li>
-                                </ul>
-                            </div>
-                            <div class="pi-text">
-                                <div class="catagory-name">Kecap</div>
-                                <router-link to="/product"><a href="#">
-                                    <h5>Kecap Bango</h5>
-                                </a></router-link> 
-                                <div class="product-price">
-                                    $14.00
-                                    <span>$35.00</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="product-item">
-                            <div class="pi-pic">
-                                <img src="img/produk/nasigoreng.png" alt="" />
-                                <ul>
-                                    <li class="w-icon active">
-                                        <a href="#"><i class="icon_bag_alt"></i></a>
-                                    </li>
-                                    <li class="quick-view"><a href="#">+ Quick View</a></li>
-                                </ul>
-                            </div>
-                            <div class="pi-text">
-                                <div class="catagory-name">Bumbu Instan</div>
-                                <a href="#">
-                                    <h5>Sajiku Nasi Goreng</h5>
-                                </a>
-                                <div class="product-price">
-                                    $13.00
-                                </div>
-                            </div>
-                        </div>
-                        <div class="product-item">
-                            <div class="pi-pic">
-                                <img src="img/produk/tepungsajiku.png" alt="" />
-                                <ul>
-                                    <li class="w-icon active">
-                                        <a href="#"><i class="icon_bag_alt"></i></a>
-                                    </li>
-                                    <li class="quick-view"><a href="#">+ Quick View</a></li>
-                                </ul>
-                            </div>
-                            <div class="pi-text">
-                                <div class="catagory-name">Bumbu Instan</div>
-                                <a href="#">
-                                    <h5>Sajiku Tepung Serbaguna</h5>
-                                </a>
-                                <div class="product-price">
-                                    $34.00
-                                </div>
-                            </div>
-                        </div>
-                        <div class="product-item">
-                            <div class="pi-pic">
-                                <img src="img/produk/roycobesar.png" alt="" />
-                                <ul>
-                                    <li class="w-icon active">
-                                        <a href="#"><i class="icon_bag_alt"></i></a>
-                                    </li>
-                                    <li class="quick-view"><a href="#">+ Quick View</a></li>
-                                    <li class="w-icon">
-                                        <a href="#"><i class="fa fa-random"></i></a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="pi-text">
-                                <div class="catagory-name">Kaldu bubuk</div>
-                                <a href="#">
-                                    <h5>Royco 100gr</h5>
-                                </a>
-                                <div class="product-price">
-                                    $34.00
-                                </div>
-                            </div>
-                        </div>
-                    </carousel>
+  <!-- Women Banner Section Begin -->
+  <section class="women-banner spad">
+    <div class="container-fluid">
+      <div class="row">
+        <!-- jika data ada / >0 maka akan menunjukkan carousel ini -->
+        <div class="col-lg-12 mt-5" v-if="products.length > 0">
+          <carousel
+            class="product-slider"
+            :items="3"
+            :dots="false"
+            :autoplay="true"
+            :nav="false"
+          >
+            <!-- mengambil data katalog berdasarkan id pada API -->
+            <div
+              class="product-item"
+              v-for="itemProduct in products"
+              v-bind:key="itemProduct.id"
+            >
+              <div class="pi-pic">
+                <img v-bind:src="itemProduct.galleries[0].photo" alt="" />
+                <ul>
+                  <li
+                    @click="
+                      saveKeranjang(
+                        itemProduct.id,
+                        itemProduct.name,
+                        itemProduct.price,
+                        itemProduct.galleries[0].photo
+                      )
+                    "
+                    class="w-icon active"
+                  >
+                    <a href="#"><i class="icon_bag_alt"></i></a>
+                  </li>
+                  <li class="quick-view">
+                    <router-link v-bind:to="'/product/' + itemProduct.id"
+                      >+ Quick View</router-link
+                    >
+                  </li>
+                </ul>
+              </div>
+              <div class="pi-text">
+                <div class="catagory-name">{{ itemProduct.type }}</div>
+                <router-link to="/product"
+                  ><a href="#">
+                    <h5>{{ itemProduct.name }}</h5>
+                  </a></router-link
+                >
+                <div class="product-price">
+                  Rp{{ itemProduct.price }}
+                  <span>$35.00</span>
                 </div>
+              </div>
             </div>
+          </carousel>
         </div>
-        
-    </section>
-    
-    <!-- Women Banner Section End -->
+        <!-- jika data tidak ditemukan -->
+        <div class="col-lg-12" v-else>
+          <p>Produk tidak tersedia</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Women Banner Section End -->
 </template>
 <script>
 import carousel from "vue-owl-carousel";
+import axios from "axios";
+
 export default {
-    name : "KatalogLugstore",
-    components: {
-        carousel
-    }
-}
+  name: "KatalogLugstore",
+  components: {
+    carousel,
+  },
+  data() {
+    return {
+      products: [],
+    };
+  },
+  //syntax dari dokumentasi vue
+  mounted() {
+    axios
+      .get("http://127.0.0.1:8000/api/products")
+      .then((res) => (this.products = res.data.data.data))
+      //eslint-disable-next-line no-console
+      .catch((err) => console.log(err));
+  },
+};
 </script>
 
 <style scoped>
-.product-item{
-    margin-right: 25px;
+.product-item {
+  margin-right: 25px;
 }
 </style>

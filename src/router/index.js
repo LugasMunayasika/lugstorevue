@@ -9,12 +9,13 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/home',
+    path: '/',
     name: 'Home',
     component: Home
   },
   {
-    path: '/product',
+    path: '/product/:id',
+    props: true,
     name: 'product',
     component: Product
   },
