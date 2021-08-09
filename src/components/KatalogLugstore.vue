@@ -50,7 +50,7 @@
                 >
                 <div class="product-price">
                   Rp{{ itemProduct.price }}
-                  <span>$35.00</span>
+                  <!-- <span>$35.00</span> -->
                 </div>
               </div>
             </div>
@@ -78,6 +78,7 @@ export default {
   data() {
     return {
       products: [],
+      keranjangUser: [],
     };
   },
   //syntax dari dokumentasi vue
@@ -87,6 +88,19 @@ export default {
       .then((res) => (this.products = res.data.data.data))
       //eslint-disable-next-line no-console
       .catch((err) => console.log(err));
+  },
+  methods: {
+    saveKeranjang(idProduct, nameProduct, priceProduct, photoProduct) {
+      var productDisimpan = {
+        id: idProduct,
+        name: nameProduct,
+        price: priceProduct,
+        photo: photoProduct,
+      };
+      this.keranjangUser.push(productDisimpan);
+      const parsed = JSON.stringify(this.keranjangUser);
+      localStorage.setItem("keranjangUser", parsed);
+    },
   },
 };
 </script>
