@@ -55,7 +55,7 @@
                           </td>
                           <!-- tanda silang -->
                           <td
-                            @click="removeItem(keranjangUser.index)"
+                            @click="removeItem(keranjang.id)"
                             class="si-close"
                           >
                             <i class="ti-close"></i>
@@ -101,11 +101,24 @@ export default {
   },
   //methods dijalankan dengan adanya even seperti onclick, onhover
   methods: {
-    removeItem(index) {
-      this.keranjangUser.splice(index, 1); //splice untuk menghilangkan data
-      //untuk menyimpan ulang kembali data yang baru / setelah dihapus
+    removeItem(idx) {
+      //mencari tahu id dari item yang akan di hapus
+      let keranjangUserStorage = JSON.parse(
+        localStorage.getItem("keranjangUser")
+      );
+
+      // untuk mecocokkan id item dengan id yang ada di storage
+      let itemKeranjangUserStorage = keranjangUserStorage.map(
+        (itemKeranjangUserStorage) => itemKeranjangUserStorage.id
+      );
+
+      let index = itemKeranjangUserStorage.findIndex((id) => id == idx);
+      this.keranjangUser.splice(index, 1);
+
+      //update ke lokal storage
       const parsed = JSON.stringify(this.keranjangUser);
       localStorage.setItem("keranjangUser", parsed);
+      window.location.reload();
     },
   },
   mounted() {

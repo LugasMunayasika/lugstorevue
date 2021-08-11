@@ -88,6 +88,14 @@ export default {
       .then((res) => (this.products = res.data.data.data))
       //eslint-disable-next-line no-console
       .catch((err) => console.log(err));
+
+    if (localStorage.getItem("keranjangUser")) {
+      try {
+        this.keranjangUser = JSON.parse(localStorage.getItem("keranjangUser"));
+      } catch (e) {
+        localStorage.removeItem("keranjangUser");
+      }
+    }
   },
   methods: {
     saveKeranjang(idProduct, nameProduct, priceProduct, photoProduct) {
@@ -100,6 +108,8 @@ export default {
       this.keranjangUser.push(productDisimpan);
       const parsed = JSON.stringify(this.keranjangUser);
       localStorage.setItem("keranjangUser", parsed);
+
+      window.location.reload();
     },
   },
 };
