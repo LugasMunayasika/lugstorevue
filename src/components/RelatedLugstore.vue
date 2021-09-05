@@ -85,7 +85,7 @@ export default {
   //syntax dari dokumentasi vue
   mounted() {
     axios
-      .get("http://lugstore-back.herokuapp.com/api/products")
+      .get("https://lugstore-back.herokuapp.com/api/products")
       .then((res) => (this.products = res.data.data.data))
       //eslint-disable-next-line no-console
       .catch((err) => console.log(err));

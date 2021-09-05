@@ -190,7 +190,7 @@ export default {
         transaction_details: productIds,
       };
       axios
-        .post("http://lugstore-back.herokuapp.com/api/checkout", checkoutData)
+        .post("https://lugstore-back.herokuapp.com/api/checkout", checkoutData)
         .then(() => this.$router.push("success"))
         //eslint-disable-next-line no-console
         .catch((err) => console.log(err));

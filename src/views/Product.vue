@@ -145,7 +145,7 @@ export default {
       }
     }
     axios
-      .get("http://lugstore-back.herokuapp.com/api/products", {
+      .get("https://lugstore-back.herokuapp.com/api/products", {
         params: {
           id: this.$route.params.id,
         },
